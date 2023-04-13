@@ -132,6 +132,20 @@ namespace UI {
                     item->draw();
     }
 
+    /**
+     * Actions that should be run in the event loop.
+     * Keep them short and don't make them draw, they run before drawing.
+     * @tparam D
+     */
+    template<typename D>
+    void Widget<D>::action() {
+        if (visible)
+            for (const auto &item: childs)
+                if (item != nullptr)
+                    item->action();
+    }
+
+
 #pragma clang diagnostic pop
 
     template<typename D>

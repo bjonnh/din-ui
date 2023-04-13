@@ -64,6 +64,8 @@ namespace UI {
 
         virtual void draw();
 
+        virtual void action();
+
         virtual void setVisible(bool v);
 
         Widget *childs[UI_WIDGET_MAX_CHILDS] = {nullptr};
