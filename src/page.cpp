@@ -17,29 +17,30 @@ namespace UI::Widgets {
     template class Page<U8G2>;
 
     template<typename D>
+    void Page<D>::add_child(Widget<D> *pWidget)  {
+        if (first_widget == nullptr)
+            first_widget = pWidget;
+        Widget<D>::add_child(pWidget);
+    }
+
+    template<typename D>
     void Page<D>::setFocus(bool f) {
+        for (auto &child: this->childs) {
+            child->setFocus(false);
+        }
         if (f) {
-            if (this->current_child > 0) {
-                if (this->childs[0] != nullptr)
-                    this->childs[0]->setFocus(true);
-                for (uint8_t i = 1; i <= this->current_child; i++)
-                    if (this->childs[i] != nullptr)
-                        this->childs[i]->setFocus(false);
-            }
-        } else {
-            if (this->current_child > 0) {
-                for (uint8_t i = 0; i <= this->current_child; i++)
-                    if (this->childs[i] != nullptr)
-                        this->childs[i]->setFocus(f);
+            // we set focus on one of the childs (we may really need to use a vector here)
+            if (first_widget) {
+                first_widget->setFocus(true);
             }
         }
     }
 
     template<typename D>
     void Page<D>::setVisible(bool f) {
+        // This doesn't seem to do much besides not calling the callbacks compared to the version in Widget
         this->visible = f;
-        for (uint8_t i = 0; i <= this->current_child; i++)
-            if (this->childs[i] != nullptr)
-                this->childs[i]->setVisible(f);
+        for (auto &child: this->childs)
+            child->setVisible(f);
     }
 }

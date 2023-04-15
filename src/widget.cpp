@@ -42,12 +42,10 @@ namespace UI {
             if (focus)
                 if (clickAction())
                     return true;
-        for (const auto &item: childs)
-            if (item != nullptr) {
-                bool out = item->click();
-                if (out)
-                    return true;
-            }
+        for (auto &child: childs) {
+            if (child->click())
+                return true;
+        }
         return false;
     }
 
@@ -58,16 +56,14 @@ namespace UI {
 
     template<typename D>
     bool Widget<D>::move_left() {
-        if (visible)
+        if (visible && focus && leftAction())
             if (focus)
                 if (leftAction())
                     return true;
-        for (const auto &item: childs)
-            if (item != nullptr) {
-                bool out = item->move_left();
-                if (out)
-                    return true;
-            }
+        for (auto &child: childs) {
+            if (child->move_left())
+                return true;
+        }
         return false;
     }
 
@@ -82,12 +78,10 @@ namespace UI {
             if (focus)
                 if (rightAction())
                     return true;
-        for (const auto &item: childs)
-            if (item != nullptr) {
-                bool out = item->move_right();
-                if (out)
-                    return true;
-            }
+        for (auto &child: childs) {
+            if (child->move_right())
+                return true;
+        }
         return false;
     }
 
@@ -127,9 +121,8 @@ namespace UI {
     template<typename D>
     void Widget<D>::draw() {
         if (visible)
-            for (const auto &item: childs)
-                if (item != nullptr)
-                    item->draw();
+            for (auto &child: childs)
+                child->draw();
     }
 
     /**
@@ -140,9 +133,8 @@ namespace UI {
     template<typename D>
     void Widget<D>::action() {
         if (visible)
-            for (const auto &item: childs)
-                if (item != nullptr)
-                    item->action();
+            for (auto &child: childs)
+                child->action();
     }
 
 
@@ -152,8 +144,7 @@ namespace UI {
     void Widget<D>::add_child(Widget<D> *pWidget) {
         // We still allow to add them but that's on you
         // Same thing if you make a loop
-        if (current_child < UI_WIDGET_MAX_CHILDS - 1)
-            childs[current_child++] = pWidget;
+        childs.emplace(pWidget);
     }
 
     template<typename D>
@@ -201,12 +192,12 @@ namespace UI {
     }
 
     template<typename D>
-    bool Widget<D>::isFocused() const {
+    bool Widget<D>::isFocused() {
         return focus;
     }
 
     template<typename D>
-    bool Widget<D>::isVisible() const {
+    bool Widget<D>::isVisible() {
         return visible;
     }
 
@@ -219,9 +210,8 @@ namespace UI {
         for (const auto &item: visible_callbacks)
             if (item != nullptr)
                 (*item)(v);
-        for (const auto &item: childs)
-            if (item != nullptr)
-                item->setVisible(v);
+        for (auto &child: childs)
+            child->setVisible(v);
     }
 
 #pragma clang diagnostic pop

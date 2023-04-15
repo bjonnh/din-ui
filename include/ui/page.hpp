@@ -27,6 +27,15 @@ namespace UI::Widgets {
 
         // Pages focus the first child
         void setFocus(bool f) override;
+
+        void setFirstWidget(Widget<D> &widget) {
+            first_widget = &widget;
+        };
+
+    private:
+        Widget<D> *first_widget {nullptr};
+
+        void add_child(Widget <D> *pWidget);
     };
 }
 

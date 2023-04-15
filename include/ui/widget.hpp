@@ -14,15 +14,16 @@
 #define DIN_UI_2040_WIDGET_HPP
 
 #include <cstdint>
+#include <set>
+#include <memory>
 
 #define UI_WIDGET_CALLBACKS 3
-#define UI_WIDGET_MAX_CHILDS 8
 
 namespace UI {
     template<typename D>
     class Widget {
     public:
-        explicit Widget(Widget<D> &parent);
+        Widget(Widget<D> &parent);
         /**
          * For the root widget only, all the child widgets will inherit the display (fancy right?)
          * @param display
@@ -59,8 +60,8 @@ namespace UI {
 
         virtual bool rightAction();
 
-        [[nodiscard]] bool isFocused() const;
-        [[nodiscard]] bool isVisible() const;
+        [[nodiscard]] bool isFocused();
+        [[nodiscard]] bool isVisible();
 
         virtual void draw();
 
@@ -68,7 +69,7 @@ namespace UI {
 
         virtual void setVisible(bool v);
 
-        Widget *childs[UI_WIDGET_MAX_CHILDS] = {nullptr};
+        std::set<std::unique_ptr<Widget>> childs = {};
     private:
         Widget *parent = nullptr;
 
@@ -93,9 +94,7 @@ namespace UI {
         bool focus = false;
         bool visible = false;
 
-        void add_child(Widget *pWidget);
-
-        uint8_t current_child = 0;
+        virtual void add_child(Widget *pWidget);
     };
 
 } // Manager
