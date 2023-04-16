@@ -18,6 +18,7 @@
 #include <memory>
 
 #define UI_WIDGET_CALLBACKS 3
+using Uint8FunctionPointer = void(*)(uint8_t);
 
 namespace UI {
     template<typename D>

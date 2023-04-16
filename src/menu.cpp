@@ -29,16 +29,14 @@ namespace UI::Widgets {
     void Menu<D>::set_selected_item_to(uint8_t new_item) {
         selected_item = new_item;
         for (const auto &item: selected_callbacks)
-            if (item != nullptr)
-                (*item)(new_item);
+            (*item)(new_item);
     }
 
     template<typename D>
     void Menu<D>::set_highlighted_item_to(uint8_t new_item) {
         current_item = new_item;
         for (const auto &item: highlighted_callbacks)
-            if (item != nullptr)
-                (*item)(new_item);
+            (*item)(new_item);
     }
 
     template<typename D>
@@ -68,14 +66,12 @@ namespace UI::Widgets {
     }
 
     template<typename D>
-    void Menu<D>::onSelectedCall(void (*fun)(uint8_t)) {
-        if (inserted_selected_callbacks < UI_WIDGET_CALLBACKS - 1)
-            selected_callbacks[inserted_selected_callbacks++] = fun;
+    void Menu<D>::onSelectedCall(Uint8FunctionPointer f) {
+        selected_callbacks.emplace(f);
     }
 
     template<typename D>
-    void Menu<D>::onHighlightedCall(void (*fun)(uint8_t)) {
-        if (inserted_highlighted_callbacks < UI_WIDGET_CALLBACKS - 1)
-            highlighted_callbacks[inserted_highlighted_callbacks++] = fun;
+    void Menu<D>::onHighlightedCall(Uint8FunctionPointer f) {
+        highlighted_callbacks.emplace(f);
     }
 } // Widgets

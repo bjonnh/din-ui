@@ -35,7 +35,7 @@ namespace UI::Widgets {
     private:
         Widget<D> *first_widget {nullptr};
 
-        void add_child(Widget <D> *pWidget);
+        void add_child(Widget <D> *pWidget) override;
     };
 }
 

@@ -33,9 +33,9 @@ namespace UI::Widgets {
 
         bool addItem(char *item);
 
-        void onHighlightedCall(void (*fun)(uint8_t));
+        void onHighlightedCall(Uint8FunctionPointer);
 
-        void onSelectedCall(void (*fun)(uint8_t));
+        void onSelectedCall(Uint8FunctionPointer);
 
         void set_highlighted_item_to(uint8_t new_item);
 
@@ -48,13 +48,8 @@ namespace UI::Widgets {
         menu_item items[MENU_ITEM_NUMBERS] = {""};
         uint8_t current_item = 0;
 
-        void (*selected_callbacks[UI_WIDGET_CALLBACKS])(uint8_t) = {nullptr};
-
-        uint8_t inserted_selected_callbacks = 0;
-
-        void (*highlighted_callbacks[UI_WIDGET_CALLBACKS])(uint8_t) = {nullptr};
-
-        uint8_t inserted_highlighted_callbacks = 0;
+        std::set<Uint8FunctionPointer> selected_callbacks = {};
+        std::set<Uint8FunctionPointer> highlighted_callbacks = {};
 
         bool clickAction() override;
 
