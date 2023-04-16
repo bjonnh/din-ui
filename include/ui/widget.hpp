@@ -72,23 +72,13 @@ namespace UI {
         std::set<std::unique_ptr<Widget>> childs = {};
     private:
         Widget *parent = nullptr;
+        using BoolFunctionPointer = void(*)(bool);
+        using VoidFunctionPointer = void(*)();
 
-        void (*focus_callbacks[UI_WIDGET_CALLBACKS])(bool) = {nullptr};
-
-        uint8_t inserted_focus_callback = 0;
-
-        void (*visible_callbacks[UI_WIDGET_CALLBACKS])(bool) = {nullptr};
-
-        uint8_t inserted_visible_callback = 0;
-
-        void (*exit_callbacks[UI_WIDGET_CALLBACKS])() = {nullptr};
-
-        uint8_t inserted_exit_callback = 0;
-
-        void (*update_callbacks[UI_WIDGET_CALLBACKS])() = {nullptr};
-
-        uint8_t inserted_update_callback = 0;
-
+        std::set<BoolFunctionPointer> focus_callbacks = {};
+        std::set<BoolFunctionPointer> visible_callbacks = {};
+        std::set<VoidFunctionPointer> exit_callbacks = {};
+        std::set<VoidFunctionPointer> update_callbacks = {};
     protected:
         D *display;
         bool focus = false;

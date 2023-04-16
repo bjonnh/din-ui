@@ -57,9 +57,7 @@ namespace UI {
     template<typename D>
     bool Widget<D>::move_left() {
         if (visible && focus && leftAction())
-            if (focus)
-                if (leftAction())
-                    return true;
+            return true;
         for (auto &child: childs) {
             if (child->move_left())
                 return true;
@@ -74,10 +72,8 @@ namespace UI {
 
     template<typename D>
     bool Widget<D>::move_right() {
-        if (visible)
-            if (focus)
-                if (rightAction())
-                    return true;
+        if (visible && focus && rightAction())
+            return true;
         for (auto &child: childs) {
             if (child->move_right())
                 return true;
@@ -89,30 +85,22 @@ namespace UI {
 
     template<typename D>
     void Widget<D>::onFocusCall(void (*fun)(bool)) {
-        if (inserted_focus_callback < UI_WIDGET_CALLBACKS) {
-            focus_callbacks[inserted_focus_callback++] = fun;
-        }
+        focus_callbacks.emplace(fun);
     }
 
     template<typename D>
     void Widget<D>::onVisibleCall(void (*fun)(bool)) {
-        if (inserted_visible_callback < UI_WIDGET_CALLBACKS) {
-            visible_callbacks[inserted_visible_callback++] = fun;
-        }
+        visible_callbacks.emplace(fun);
     }
 
     template<typename D>
     void Widget<D>::onExitCall(void (*fun)()) {
-        if (inserted_exit_callback < UI_WIDGET_CALLBACKS) {
-            exit_callbacks[inserted_exit_callback++] = fun;
-        }
+        exit_callbacks.emplace(fun);
     }
 
     template<typename D>
     void Widget<D>::onUpdateCall(void (*fun)()) {
-        if (inserted_update_callback < UI_WIDGET_CALLBACKS) {
-            update_callbacks[inserted_update_callback++] = fun;
-        }
+        update_callbacks.emplace(fun);
     }
 
 #pragma clang diagnostic push
@@ -153,8 +141,7 @@ namespace UI {
         if (f)
             parent->focus = false;  // We do not call the function for that as it would enter an endless loop for pages
         for (const auto &item: focus_callbacks)
-            if (item != nullptr)
-                (*item)(f);
+            (*item)(f);
     }
 
     template<typename D>
@@ -165,15 +152,13 @@ namespace UI {
     template<typename D>
     void Widget<D>::exit() {
         for (const auto &item: exit_callbacks)
-            if (item != nullptr)
-                (*item)();
+            (*item)();
     }
 
     template<typename D>
     void Widget<D>::update() {
         for (const auto &item: update_callbacks)
-            if (item != nullptr)
-                (*item)();
+            (*item)();
     }
 
     template<typename D>
@@ -208,8 +193,7 @@ namespace UI {
     void Widget<D>::setVisible(bool v) {
         visible = v;
         for (const auto &item: visible_callbacks)
-            if (item != nullptr)
-                (*item)(v);
+            (*item)(v);
         for (auto &child: childs)
             child->setVisible(v);
     }
