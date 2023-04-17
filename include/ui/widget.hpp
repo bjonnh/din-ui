@@ -13,6 +13,7 @@
 #ifndef DIN_UI_2040_WIDGET_HPP
 #define DIN_UI_2040_WIDGET_HPP
 
+#include <functional>
 #include <cstdint>
 #include <set>
 #include <memory>
@@ -37,13 +38,13 @@ namespace UI {
 
         virtual void setFocus(bool f);
 
-        virtual void onFocusCall(void (*fun)(bool));
+        virtual void onFocusCall(std::function<void(bool)>);
 
-        virtual void onVisibleCall(void (*fun)(bool));
+        virtual void onVisibleCall(std::function<void(bool)>);
 
-        virtual void onExitCall(void (*fun)());
+        virtual void onExitCall(std::function<void()>);
 
-        virtual void onUpdateCall(void (*fun)());
+        virtual void onUpdateCall(std::function<void()>);
 
         virtual void exit();
 
@@ -73,13 +74,11 @@ namespace UI {
         std::set<std::unique_ptr<Widget>> childs = {};
     private:
         Widget *parent = nullptr;
-        using BoolFunctionPointer = void(*)(bool);
-        using VoidFunctionPointer = void(*)();
 
-        std::set<BoolFunctionPointer> focus_callbacks = {};
-        std::set<BoolFunctionPointer> visible_callbacks = {};
-        std::set<VoidFunctionPointer> exit_callbacks = {};
-        std::set<VoidFunctionPointer> update_callbacks = {};
+        std::vector<std::function<void(bool)>> focus_callbacks = {};
+        std::vector<std::function<void(bool)>> visible_callbacks = {};
+        std::vector<std::function<void()>> exit_callbacks = {};
+        std::vector<std::function<void()>> update_callbacks = {};
     protected:
         D *display;
         bool focus = false;

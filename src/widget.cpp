@@ -10,6 +10,7 @@
  *
  */
 
+#include <functional>
 #include "../include/ui/widget.hpp"
 #include "U8g2lib.h"
 
@@ -84,23 +85,23 @@ namespace UI {
 #pragma clang diagnostic pop
 
     template<typename D>
-    void Widget<D>::onFocusCall(void (*fun)(bool)) {
-        focus_callbacks.emplace(fun);
+    void Widget<D>::onFocusCall(const std::function<void(bool)> fun) {
+        focus_callbacks.push_back(fun);
     }
 
     template<typename D>
-    void Widget<D>::onVisibleCall(void (*fun)(bool)) {
-        visible_callbacks.emplace(fun);
+    void Widget<D>::onVisibleCall(const std::function<void(bool)> fun) {
+        visible_callbacks.push_back(fun);
     }
 
     template<typename D>
-    void Widget<D>::onExitCall(void (*fun)()) {
-        exit_callbacks.emplace(fun);
+    void Widget<D>::onExitCall(const std::function<void()> fun) {
+        exit_callbacks.push_back(fun);
     }
 
     template<typename D>
-    void Widget<D>::onUpdateCall(void (*fun)()) {
-        update_callbacks.emplace(fun);
+    void Widget<D>::onUpdateCall(const std::function<void()> fun) {
+        update_callbacks.push_back(fun);
     }
 
 #pragma clang diagnostic push
@@ -141,7 +142,7 @@ namespace UI {
         if (f)
             parent->focus = false;  // We do not call the function for that as it would enter an endless loop for pages
         for (const auto &item: focus_callbacks)
-            (*item)(f);
+            item(f);
     }
 
     template<typename D>
@@ -152,13 +153,13 @@ namespace UI {
     template<typename D>
     void Widget<D>::exit() {
         for (const auto &item: exit_callbacks)
-            (*item)();
+            item();
     }
 
     template<typename D>
     void Widget<D>::update() {
         for (const auto &item: update_callbacks)
-            (*item)();
+            item();
     }
 
     template<typename D>
@@ -193,7 +194,7 @@ namespace UI {
     void Widget<D>::setVisible(bool v) {
         visible = v;
         for (const auto &item: visible_callbacks)
-            (*item)(v);
+            item(v);
         for (auto &child: childs)
             child->setVisible(v);
     }
